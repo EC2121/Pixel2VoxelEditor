@@ -11,6 +11,7 @@ public class CanvasMGR : MonoBehaviour
     public static UnityEvent OnShapeSelected = new UnityEvent();
     public static UnityEvent OnPreviewSelected = new UnityEvent();
     public static UnityEvent OnBackSelected = new UnityEvent();
+    public static UnityEvent OnSaveSelected = new UnityEvent();
     Image currSelectedColorImage;
 
     private void Awake()
@@ -20,7 +21,7 @@ public class CanvasMGR : MonoBehaviour
     void Start()
     {
         currSelectedColorImage = transform.GetChild(0).GetComponent<Image>();
-        currSelectedColorImage.color = DataContainer.CurrentSelectedColor;
+        currSelectedColorImage.color = new Color(0,0,0,0);
     }
 
     public void OnPreviewPressed()
@@ -43,7 +44,10 @@ public class CanvasMGR : MonoBehaviour
     {
         OnShapeSelected?.Invoke();
     }
-
+    public void OnSaveButtonPressed()
+    {
+        OnSaveSelected?.Invoke();
+    }
     public void OnBackPressed()
     {
         OnBackSelected?.Invoke();
@@ -52,7 +56,7 @@ public class CanvasMGR : MonoBehaviour
     private void OnColorPicked()
     {
         if (currSelectedColorImage != null)
-            currSelectedColorImage.color = DataContainer.CurrentSelectedColor;
+            currSelectedColorImage.color = DataContainer.CurrentSelectedMat.color;
     }
    
 }

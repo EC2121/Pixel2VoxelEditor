@@ -6,8 +6,8 @@ using UnityEngine;
 public class Quad : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Color MyCol;
-    private Color defaultColor;
+    public Material MyMat;
+    private Material defaultMat;
     private MeshRenderer myRenderer;
     private Transform myTextParent;
     private TextMeshPro myText;
@@ -21,8 +21,9 @@ public class Quad : MonoBehaviour
     void Start()
     {
         myRenderer = GetComponent<MeshRenderer>();
-        defaultColor = myRenderer.material.color;
-        MyCol = defaultColor;
+        defaultMat = myRenderer.material;
+        MyMat = myRenderer.material;
+        /*MyCol = defaultColor*/;
         myTextParent = transform.GetChild(0);
         myText = myTextParent.GetChild(0).GetComponent<TextMeshPro>();
         CanvasMGR.OnVoxelSelected.AddListener(() => myTextParent.GetChild(0).gameObject.SetActive(true));
@@ -42,7 +43,7 @@ public class Quad : MonoBehaviour
 
     public void ChangeVoxelNumber()
     {
-        if (MyCol == defaultColor)
+        if (MyMat == defaultMat)
             return;
         if (myText == null)
             return;
@@ -55,7 +56,7 @@ public class Quad : MonoBehaviour
 
     public void ChangeMesh()
     {
-        if (MyCol == defaultColor || DataContainer.CurrentSelectedMesh == null)
+        if (MyMat == defaultMat || DataContainer.CurrentSelectedMesh == null)
             return;
 
         Mesh currentMesh = DataContainer.CurrentSelectedMesh;
@@ -93,9 +94,9 @@ public class Quad : MonoBehaviour
 
     public void ResetColor()
     {
-        if (MyCol == defaultColor)
+        if (MyMat== defaultMat)
             return;
-        MyCol = defaultColor;
+        myRenderer.material= defaultMat;
         MyVoxelNumber = 0;
         myText.text = "";
         DataContainer.VoxelIndexes[MyIndexX, MyIndexY] = null;
@@ -106,26 +107,28 @@ public class Quad : MonoBehaviour
             transform.GetComponent<MeshFilter>().mesh = defaultMesh;
             myMesh = defaultMesh;
         }
-         
-        myRenderer.material.color = defaultColor;
+        MyMat = defaultMat;
 
     }
 
     public void ChangeColor()
     {
-        Color selectedCol = DataContainer.CurrentSelectedColor;
-        if (MyCol == selectedCol)
+        Material selectedCol = DataContainer.CurrentSelectedMat;
+        if (selectedCol == null)
+            return;
+
+        if (MyMat == selectedCol)
             return;
 
         int voxelNumber = DataContainer.currentVoxelNumber;
 
-        if (MyCol == defaultColor)
+        if (MyMat == defaultMat)
         {
             MyVoxelNumber = voxelNumber;
             myText.text = voxelNumber.ToString();
         }
-        myRenderer.material.color = selectedCol;
-        MyCol = selectedCol;
+        myRenderer.material = selectedCol;
+        MyMat = selectedCol;
         DataContainer.VoxelIndexes[MyIndexX, MyIndexY] = this;
     }
 }

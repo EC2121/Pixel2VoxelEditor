@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -13,6 +14,7 @@ public class VoxelCreator : MonoBehaviour
     {
         CanvasMGR.OnBackSelected.AddListener(DestroyAllChildren);
         CanvasMGR.OnPreviewSelected.AddListener(Create);
+        CanvasMGR.OnSaveSelected.AddListener(Save);
         parent = GameObject.Find("ObjectParent");
     }
 
@@ -42,7 +44,7 @@ public class VoxelCreator : MonoBehaviour
                         GameObject go = Instantiate<GameObject>(ObjectList[voxel.MyMeshIndex], pos,
                         voxel.transform.rotation, parent.transform);
 
-                        go.GetComponent<MeshRenderer>().material.color = voxel.MyCol;
+                        go.GetComponent<MeshRenderer>().sharedMaterial = voxel.MyMat;
                         pos.z += 0.5f;
                     }
                     
@@ -51,5 +53,12 @@ public class VoxelCreator : MonoBehaviour
         }
 
        
+    }
+
+
+    public void Save()
+    {
+        parent.transform.rotation = Quaternion.identity;
+        PrefabUtility.SaveAsPrefabAsset(parent.gameObject, "Assets/CreatedObjs/" + parent.gameObject.name + ".prefab");
     }
 }

@@ -40,12 +40,12 @@ public class RaycastMGR : MonoBehaviour
                 {
                     if (Physics.Raycast(ray, out info, 100, colorLayer))
                     {
-                        Color color = info.transform.GetComponent<MeshRenderer>().material.color;
+                        Material sharedMat = info.transform.GetComponent<MeshRenderer>().sharedMaterial;
 
-                        if (color == DataContainer.CurrentSelectedColor)
+                        if (sharedMat == DataContainer.CurrentSelectedMat)
                             return;
 
-                        DataContainer.CurrentSelectedColor = color;
+                        DataContainer.CurrentSelectedMat = sharedMat;
                         OnColorChanged?.Invoke();
                     }
                 }
