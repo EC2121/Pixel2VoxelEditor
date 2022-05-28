@@ -6,28 +6,31 @@ using UnityEngine;
 public class Quad : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Color myCol;
+    public Color MyCol;
     private Color defaultColor;
     private MeshRenderer myRenderer;
-    private Transform myTextTransform;
+    private Transform myTextParent;
     private TextMeshPro myText;
-    private int myVoxelNumber;
+    public int MyVoxelNumber;
     private Mesh myMesh;
-
-    private int myRotationZ = 0;
-
+    private Mesh defaultMesh;
+    private Vector3 rotation = Vector3.forward * 90;
+    public int MyMeshIndex;
+    public int MyIndexX;
+    public int MyIndexY;
     void Start()
     {
         myRenderer = GetComponent<MeshRenderer>();
         defaultColor = myRenderer.material.color;
-        myCol = defaultColor;
-        myTextTransform = transform.GetChild(0);
-        myText = myTextTransform.GetComponent<TextMeshPro>();
-        CanvasMGR.OnVoxelSelected.AddListener(() => myTextTransform.gameObject.SetActive(true));
-        CanvasMGR.OnDrawSelected.AddListener(() => myTextTransform.gameObject.SetActive(false));
-        CanvasMGR.OnShapeSelected.AddListener(() => myTextTransform.gameObject.SetActive(false));
-        myVoxelNumber = 1;
+        MyCol = defaultColor;
+        myTextParent = transform.GetChild(0);
+        myText = myTextParent.GetChild(0).GetComponent<TextMeshPro>();
+        CanvasMGR.OnVoxelSelected.AddListener(() => myTextParent.GetChild(0).gameObject.SetActive(true));
+        CanvasMGR.OnDrawSelected.AddListener(() => myTextParent.GetChild(0).gameObject.SetActive(false));
+        CanvasMGR.OnShapeSelected.AddListener(() => myTextParent.GetChild(0).gameObject.SetActive(false));
+        MyVoxelNumber = 1;
         myMesh = transform.GetComponent<MeshFilter>().mesh;
+        defaultMesh = myMesh;
     }
 
     // Update is called once per frame
@@ -39,24 +42,22 @@ public class Quad : MonoBehaviour
 
     public void ChangeVoxelNumber()
     {
-        if (myCol == defaultColor)
+        if (MyCol == defaultColor)
             return;
         if (myText == null)
             return;
 
-        myVoxelNumber++;
-
-        if (myVoxelNumber > 4)
-            myVoxelNumber = 1;
-
-        myText.text = myVoxelNumber.ToString();
+        int voxelNumber = DataContainer.currentVoxelNumber;
+        MyVoxelNumber = voxelNumber;
+        myText.text = voxelNumber.ToString();
     }
 
 
     public void ChangeMesh()
     {
-        if (DataContainer.CurrentSelectedMesh == null)
+        if (MyCol == defaultColor || DataContainer.CurrentSelectedMesh == null)
             return;
+
         Mesh currentMesh = DataContainer.CurrentSelectedMesh;
         if (myMesh == currentMesh)
         {
@@ -66,7 +67,7 @@ public class Quad : MonoBehaviour
 
         transform.GetComponent<MeshFilter>().mesh = currentMesh;
         myMesh = currentMesh;
-
+        MyMeshIndex = DataContainer.MeshsIndexes[myMesh];
 
 
     }
@@ -74,11 +75,9 @@ public class Quad : MonoBehaviour
 
     private void Rotate()
     {
-        myRotationZ += 90;
-        transform.rotation = Quaternion.Euler(Vector3.forward * myRotationZ);
-        myText.rectTransform.rotation = Quaternion.Euler(Vector3.forward * (-myRotationZ));
-        if (myRotationZ >= 360)
-            myRotationZ = 0;
+
+        transform.Rotate(rotation);  /*Quaternion.Euler(Vector3.forward * myRotationZ);*/
+        myTextParent.Rotate(-rotation); /*= Quaternion.Euler(-(Vector3.forward * myRotationZ));*/
 
     }
 
@@ -94,26 +93,39 @@ public class Quad : MonoBehaviour
 
     public void ResetColor()
     {
-        if (myCol == defaultColor)
+        if (MyCol == defaultColor)
             return;
-        myCol = defaultColor;
-        myRenderer.material.color = defaultColor;
-        myVoxelNumber = 0;
+        MyCol = defaultColor;
+        MyVoxelNumber = 0;
         myText.text = "";
+        DataContainer.VoxelIndexes[MyIndexX, MyIndexY] = null;
+        MyMeshIndex = 0;
+
+        if (myMesh != defaultMesh)
+        {
+            transform.GetComponent<MeshFilter>().mesh = defaultMesh;
+            myMesh = defaultMesh;
+        }
+         
+        myRenderer.material.color = defaultColor;
 
     }
 
     public void ChangeColor()
     {
-        if (myCol == defaultColor)
-        {
-            myVoxelNumber = 1;
-            myText.text = myVoxelNumber.ToString();
-        }
         Color selectedCol = DataContainer.CurrentSelectedColor;
-        if (myCol == selectedCol)
+        if (MyCol == selectedCol)
             return;
+
+        int voxelNumber = DataContainer.currentVoxelNumber;
+
+        if (MyCol == defaultColor)
+        {
+            MyVoxelNumber = voxelNumber;
+            myText.text = voxelNumber.ToString();
+        }
         myRenderer.material.color = selectedCol;
-        myCol = selectedCol;
+        MyCol = selectedCol;
+        DataContainer.VoxelIndexes[MyIndexX, MyIndexY] = this;
     }
 }

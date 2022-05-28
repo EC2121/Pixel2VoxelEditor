@@ -9,14 +9,25 @@ public class CanvasMGR : MonoBehaviour
     public static UnityEvent OnVoxelSelected = new UnityEvent();
     public static UnityEvent OnDrawSelected = new UnityEvent();
     public static UnityEvent OnShapeSelected = new UnityEvent();
+    public static UnityEvent OnPreviewSelected = new UnityEvent();
+    public static UnityEvent OnBackSelected = new UnityEvent();
     Image currSelectedColorImage;
+
+    private void Awake()
+    {
+        RaycastMGR.OnColorChanged.AddListener(OnColorPicked);
+    }
     void Start()
     {
         currSelectedColorImage = transform.GetChild(0).GetComponent<Image>();
         currSelectedColorImage.color = DataContainer.CurrentSelectedColor;
-        RaycastMGR.OnColorChanged.AddListener(OnColorPicked);
     }
 
+    public void OnPreviewPressed()
+    {
+        OnPreviewSelected?.Invoke();
+    }
+    
     public void OnVoxelButtonPressed()
     {
         OnVoxelSelected?.Invoke();
@@ -33,6 +44,10 @@ public class CanvasMGR : MonoBehaviour
         OnShapeSelected?.Invoke();
     }
 
+    public void OnBackPressed()
+    {
+        OnBackSelected?.Invoke();
+    }
 
     private void OnColorPicked()
     {
