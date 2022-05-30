@@ -6,8 +6,6 @@ public class QuadInstantiator : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    private GameObject whiteQuad;
-    private GameObject greyQuad;
     private GameObject root;
     private List<GameObject> batchingList;
     public List<Mesh> Meshes;
@@ -19,16 +17,16 @@ public class QuadInstantiator : MonoBehaviour
         }
 
         DataContainer.VoxelIndexes = new Quad[16, 16];
-       
-        whiteQuad = Resources.Load("QuadWhite") as GameObject;
-        greyQuad = Resources.Load("QuadGrey") as GameObject;
+        GameObject whiteQuad = Resources.Load("QuadWhite") as GameObject;
+        GameObject greyQuad = Resources.Load("QuadGrey") as GameObject;
+
         GameObject whiteQuadBG = Resources.Load("QuadWhiteBG") as GameObject;
         GameObject greyQuadBG = Resources.Load("QuadGreyBG") as GameObject;
         root = GameObject.Find("Root");
         batchingList = new List<GameObject>();
         Vector3 pos = new Vector3(-4f, -4f, 0.1f);
 
-
+        //BG
         for (int x = 0; x < 16; x++)
         {
             for (int y = 0; y < 16; y++)
@@ -40,8 +38,9 @@ public class QuadInstantiator : MonoBehaviour
             pos.x = -4f;
         }
 
-        pos = new Vector3(-4f, -4f, 0);
 
+        //EditableTiles
+        pos = new Vector3(-4f, -4f, 0);
         for (int x = 0; x < 16; x++)
         {
             for (int y = 0; y < 16; y++)
@@ -55,12 +54,6 @@ public class QuadInstantiator : MonoBehaviour
             pos.y += 0.5f;
             pos.x = -4f;
         }
-
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+ 
 }

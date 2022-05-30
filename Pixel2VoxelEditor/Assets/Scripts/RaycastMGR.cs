@@ -22,6 +22,7 @@ public class RaycastMGR : MonoBehaviour
         CanvasMGR.OnDrawSelected.AddListener(() => currentMode = Mode.Draw);
         CanvasMGR.OnVoxelSelected.AddListener(() => currentMode = Mode.Voxel);
         CanvasMGR.OnShapeSelected.AddListener(() => currentMode = Mode.Shape);
+        CanvasMGR.OnPreviewSelected.AddListener(() => currentMode = Mode.Preview);
     }
     private void Update()
     {

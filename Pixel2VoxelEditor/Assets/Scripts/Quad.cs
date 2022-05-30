@@ -43,10 +43,9 @@ public class Quad : MonoBehaviour
 
     public void ChangeVoxelNumber()
     {
-        if (MyMat == defaultMat)
+        if (MyMat == defaultMat || myText == null)
             return;
-        if (myText == null)
-            return;
+      
 
         int voxelNumber = DataContainer.currentVoxelNumber;
         MyVoxelNumber = voxelNumber;
@@ -69,8 +68,6 @@ public class Quad : MonoBehaviour
         transform.GetComponent<MeshFilter>().mesh = currentMesh;
         myMesh = currentMesh;
         MyMeshIndex = DataContainer.MeshsIndexes[myMesh];
-
-
     }
 
 
@@ -99,8 +96,9 @@ public class Quad : MonoBehaviour
         myRenderer.material= defaultMat;
         MyVoxelNumber = 0;
         myText.text = "";
-        DataContainer.VoxelIndexes[MyIndexX, MyIndexY] = null;
         MyMeshIndex = 0;
+
+        DataContainer.VoxelIndexes[MyIndexX, MyIndexY] = null;
 
         if (myMesh != defaultMesh)
         {
@@ -114,10 +112,7 @@ public class Quad : MonoBehaviour
     public void ChangeColor()
     {
         Material selectedCol = DataContainer.CurrentSelectedMat;
-        if (selectedCol == null)
-            return;
-
-        if (MyMat == selectedCol)
+        if (selectedCol == null || MyMat == selectedCol)
             return;
 
         int voxelNumber = DataContainer.currentVoxelNumber;
